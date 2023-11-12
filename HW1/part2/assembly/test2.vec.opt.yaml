@@ -1,0 +1,721 @@
+--- !Missed
+Pass:            inline
+Name:            NoDefinition
+DebugLoc:        { File: './fasttime.h', Line: 74, Column: 11 }
+Function:        _ZL7gettimev
+Args:
+  - Callee:          clock_gettime
+  - String:          ' will not be inlined into '
+  - Caller:          _ZL7gettimev
+    DebugLoc:        { File: './fasttime.h', Line: 69, Column: 0 }
+  - String:          ' because its definition is unavailable'
+...
+--- !Missed
+Pass:            inline
+Name:            NoDefinition
+DebugLoc:        { File: './fasttime.h', Line: 75, Column: 3 }
+Function:        _ZL7gettimev
+Args:
+  - Callee:          __assert_fail
+  - String:          ' will not be inlined into '
+  - Caller:          _ZL7gettimev
+    DebugLoc:        { File: './fasttime.h', Line: 69, Column: 0 }
+  - String:          ' because its definition is unavailable'
+...
+--- !Missed
+Pass:            gvn
+Name:            LoadClobbered
+DebugLoc:        { File: './fasttime.h', Line: 78, Column: 1 }
+Function:        _ZL7gettimev
+Args:
+  - String:          'load of type '
+  - Type:            i64
+  - String:          ' not eliminated'
+  - String:          ' because it is clobbered by '
+  - ClobberedBy:     call
+    DebugLoc:        { File: './fasttime.h', Line: 74, Column: 11 }
+...
+--- !Missed
+Pass:            gvn
+Name:            LoadClobbered
+DebugLoc:        { File: './fasttime.h', Line: 78, Column: 1 }
+Function:        _ZL7gettimev
+Args:
+  - String:          'load of type '
+  - Type:            i64
+  - String:          ' not eliminated'
+  - String:          ' because it is clobbered by '
+  - ClobberedBy:     call
+    DebugLoc:        { File: './fasttime.h', Line: 74, Column: 11 }
+...
+--- !Missed
+Pass:            inline
+Name:            NoDefinition
+DebugLoc:        { File: '/usr/bin/../lib/gcc/x86_64-linux-gnu/10/../../../../include/c++/10/bits/basic_ios.h', 
+                   Line: 158, Column: 15 }
+Function:        _ZNSt9basic_iosIcSt11char_traitsIcEE8setstateESt12_Ios_Iostate
+Args:
+  - Callee:          _ZNSt9basic_iosIcSt11char_traitsIcEE5clearESt12_Ios_Iostate
+  - String:          ' will not be inlined into '
+  - Caller:          _ZNSt9basic_iosIcSt11char_traitsIcEE8setstateESt12_Ios_Iostate
+    DebugLoc:        { File: '/usr/bin/../lib/gcc/x86_64-linux-gnu/10/../../../../include/c++/10/bits/basic_ios.h', 
+                       Line: 158, Column: 0 }
+  - String:          ' because its definition is unavailable'
+...
+--- !Passed
+Pass:            inline
+Name:            Inlined
+DebugLoc:        { File: '/usr/bin/../lib/gcc/x86_64-linux-gnu/10/../../../../include/c++/10/bits/basic_ios.h', 
+                   Line: 158, Column: 27 }
+Function:        _ZNSt9basic_iosIcSt11char_traitsIcEE8setstateESt12_Ios_Iostate
+Args:
+  - Callee:          _ZNKSt9basic_iosIcSt11char_traitsIcEE7rdstateEv
+    DebugLoc:        { File: '/usr/bin/../lib/gcc/x86_64-linux-gnu/10/../../../../include/c++/10/bits/basic_ios.h', 
+                       Line: 138, Column: 0 }
+  - String:          ' inlined into '
+  - Caller:          _ZNSt9basic_iosIcSt11char_traitsIcEE8setstateESt12_Ios_Iostate
+    DebugLoc:        { File: '/usr/bin/../lib/gcc/x86_64-linux-gnu/10/../../../../include/c++/10/bits/basic_ios.h', 
+                       Line: 158, Column: 0 }
+  - String:          ' with '
+  - String:          '(cost='
+  - Cost:            '-30'
+  - String:          ', threshold='
+  - Threshold:       '375'
+  - String:          ')'
+  - String:          ' at callsite '
+  - String:          setstate
+  - String:          ':'
+  - Line:            '1'
+...
+--- !Passed
+Pass:            inline
+Name:            Inlined
+DebugLoc:        { File: '/usr/bin/../lib/gcc/x86_64-linux-gnu/10/../../../../include/c++/10/bits/basic_ios.h', 
+                   Line: 158, Column: 37 }
+Function:        _ZNSt9basic_iosIcSt11char_traitsIcEE8setstateESt12_Ios_Iostate
+Args:
+  - Callee:          _ZStorSt12_Ios_IostateS_
+    DebugLoc:        { File: '/usr/bin/../lib/gcc/x86_64-linux-gnu/10/../../../../include/c++/10/bits/ios_base.h', 
+                       Line: 170, Column: 0 }
+  - String:          ' inlined into '
+  - Caller:          _ZNSt9basic_iosIcSt11char_traitsIcEE8setstateESt12_Ios_Iostate
+    DebugLoc:        { File: '/usr/bin/../lib/gcc/x86_64-linux-gnu/10/../../../../include/c++/10/bits/basic_ios.h', 
+                       Line: 158, Column: 0 }
+  - String:          ' with '
+  - String:          '(cost='
+  - Cost:            '-35'
+  - String:          ', threshold='
+  - Threshold:       '487'
+  - String:          ')'
+  - String:          ' at callsite '
+  - String:          setstate
+  - String:          ':'
+  - Line:            '1'
+...
+--- !Missed
+Pass:            inline
+Name:            NoDefinition
+DebugLoc:        { File: '/usr/bin/../lib/gcc/x86_64-linux-gnu/10/../../../../include/c++/10/bits/char_traits.h', 
+                   Line: 371, Column: 9 }
+Function:        _ZNSt11char_traitsIcE6lengthEPKc
+Args:
+  - Callee:          strlen
+  - String:          ' will not be inlined into '
+  - Caller:          _ZNSt11char_traitsIcE6lengthEPKc
+    DebugLoc:        { File: '/usr/bin/../lib/gcc/x86_64-linux-gnu/10/../../../../include/c++/10/bits/char_traits.h', 
+                       Line: 366, Column: 0 }
+  - String:          ' because its definition is unavailable'
+...
+--- !Missed
+Pass:            inline
+Name:            NoDefinition
+DebugLoc:        { File: '/usr/bin/../lib/gcc/x86_64-linux-gnu/10/../../../../include/c++/10/ostream', 
+                   Line: 611, Column: 2 }
+Function:        _ZStlsISt11char_traitsIcEERSt13basic_ostreamIcT_ES5_PKc
+Args:
+  - Callee:          _ZSt16__ostream_insertIcSt11char_traitsIcEERSt13basic_ostreamIT_T0_ES6_PKS3_l
+  - String:          ' will not be inlined into '
+  - Caller:          _ZStlsISt11char_traitsIcEERSt13basic_ostreamIcT_ES5_PKc
+    DebugLoc:        { File: '/usr/bin/../lib/gcc/x86_64-linux-gnu/10/../../../../include/c++/10/ostream', 
+                       Line: 607, Column: 0 }
+  - String:          ' because its definition is unavailable'
+...
+--- !Passed
+Pass:            inline
+Name:            Inlined
+DebugLoc:        { File: '/usr/bin/../lib/gcc/x86_64-linux-gnu/10/../../../../include/c++/10/ostream', 
+                   Line: 609, Column: 8 }
+Function:        _ZStlsISt11char_traitsIcEERSt13basic_ostreamIcT_ES5_PKc
+Args:
+  - Callee:          _ZNSt9basic_iosIcSt11char_traitsIcEE8setstateESt12_Ios_Iostate
+    DebugLoc:        { File: '/usr/bin/../lib/gcc/x86_64-linux-gnu/10/../../../../include/c++/10/bits/basic_ios.h', 
+                       Line: 158, Column: 0 }
+  - String:          ' inlined into '
+  - Caller:          _ZStlsISt11char_traitsIcEERSt13basic_ostreamIcT_ES5_PKc
+    DebugLoc:        { File: '/usr/bin/../lib/gcc/x86_64-linux-gnu/10/../../../../include/c++/10/ostream', 
+                       Line: 607, Column: 0 }
+  - String:          ' with '
+  - String:          '(cost='
+  - Cost:            '10'
+  - String:          ', threshold='
+  - Threshold:       '375'
+  - String:          ')'
+  - String:          ' at callsite '
+  - String:          'operator<<<std::char_traits<char> >'
+  - String:          ':'
+  - Line:            '3'
+...
+--- !Passed
+Pass:            inline
+Name:            Inlined
+DebugLoc:        { File: '/usr/bin/../lib/gcc/x86_64-linux-gnu/10/../../../../include/c++/10/ostream', 
+                   Line: 612, Column: 29 }
+Function:        _ZStlsISt11char_traitsIcEERSt13basic_ostreamIcT_ES5_PKc
+Args:
+  - Callee:          _ZNSt11char_traitsIcE6lengthEPKc
+    DebugLoc:        { File: '/usr/bin/../lib/gcc/x86_64-linux-gnu/10/../../../../include/c++/10/bits/char_traits.h', 
+                       Line: 366, Column: 0 }
+  - String:          ' inlined into '
+  - Caller:          _ZStlsISt11char_traitsIcEERSt13basic_ostreamIcT_ES5_PKc
+    DebugLoc:        { File: '/usr/bin/../lib/gcc/x86_64-linux-gnu/10/../../../../include/c++/10/ostream', 
+                       Line: 607, Column: 0 }
+  - String:          ' with '
+  - String:          '(cost='
+  - Cost:            '0'
+  - String:          ', threshold='
+  - Threshold:       '375'
+  - String:          ')'
+  - String:          ' at callsite '
+  - String:          'operator<<<std::char_traits<char> >'
+  - String:          ':'
+  - Line:            '6'
+...
+--- !Missed
+Pass:            inline
+Name:            NoDefinition
+DebugLoc:        { File: '/usr/bin/../lib/gcc/x86_64-linux-gnu/10/../../../../include/c++/10/ostream', 
+                   Line: 221, Column: 16 }
+Function:        _ZNSolsEd
+Args:
+  - Callee:          _ZNSo9_M_insertIdEERSoT_
+  - String:          ' will not be inlined into '
+  - Caller:          _ZNSolsEd
+    DebugLoc:        { File: '/usr/bin/../lib/gcc/x86_64-linux-gnu/10/../../../../include/c++/10/ostream', 
+                       Line: 221, Column: 0 }
+  - String:          ' because its definition is unavailable'
+...
+--- !Missed
+Pass:            inline
+Name:            NoDefinition
+DebugLoc:        { File: test2.cpp, Line: 30, Column: 39 }
+Function:        _Z5test2PfS_S_i
+Args:
+  - Callee:          _ZNSolsEi
+  - String:          ' will not be inlined into '
+  - Caller:          _Z5test2PfS_S_i
+    DebugLoc:        { File: test2.cpp, Line: 6, Column: 0 }
+  - String:          ' because its definition is unavailable'
+...
+--- !Missed
+Pass:            inline
+Name:            NoDefinition
+DebugLoc:        { File: test2.cpp, Line: 30, Column: 55 }
+Function:        _Z5test2PfS_S_i
+Args:
+  - Callee:          _ZNSolsEi
+  - String:          ' will not be inlined into '
+  - Caller:          _Z5test2PfS_S_i
+    DebugLoc:        { File: test2.cpp, Line: 6, Column: 0 }
+  - String:          ' because its definition is unavailable'
+...
+--- !Passed
+Pass:            inline
+Name:            Inlined
+DebugLoc:        { File: test2.cpp, Line: 11, Column: 22 }
+Function:        _Z5test2PfS_S_i
+Args:
+  - Callee:          _ZL7gettimev
+    DebugLoc:        { File: './fasttime.h', Line: 69, Column: 0 }
+  - String:          ' inlined into '
+  - Caller:          _Z5test2PfS_S_i
+    DebugLoc:        { File: test2.cpp, Line: 6, Column: 0 }
+  - String:          ' with '
+  - String:          '(cost='
+  - Cost:            '95'
+  - String:          ', threshold='
+  - Threshold:       '325'
+  - String:          ')'
+  - String:          ' at callsite '
+  - String:          test2
+  - String:          ':'
+  - Line:            '6'
+...
+--- !Passed
+Pass:            inline
+Name:            Inlined
+DebugLoc:        { File: test2.cpp, Line: 26, Column: 22 }
+Function:        _Z5test2PfS_S_i
+Args:
+  - Callee:          _ZL7gettimev
+    DebugLoc:        { File: './fasttime.h', Line: 69, Column: 0 }
+  - String:          ' inlined into '
+  - Caller:          _Z5test2PfS_S_i
+    DebugLoc:        { File: test2.cpp, Line: 6, Column: 0 }
+  - String:          ' with '
+  - String:          '(cost='
+  - Cost:            '-14905'
+  - String:          ', threshold='
+  - Threshold:       '325'
+  - String:          ')'
+  - String:          ' at callsite '
+  - String:          test2
+  - String:          ':'
+  - Line:            '21'
+...
+--- !Passed
+Pass:            inline
+Name:            Inlined
+DebugLoc:        { File: test2.cpp, Line: 28, Column: 21 }
+Function:        _Z5test2PfS_S_i
+Args:
+  - Callee:          _ZL5tdiff8timespecS_
+    DebugLoc:        { File: './fasttime.h', Line: 82, Column: 0 }
+  - String:          ' inlined into '
+  - Caller:          _Z5test2PfS_S_i
+    DebugLoc:        { File: test2.cpp, Line: 6, Column: 0 }
+  - String:          ' with '
+  - String:          '(cost='
+  - Cost:            '-15020'
+  - String:          ', threshold='
+  - Threshold:       '487'
+  - String:          ')'
+  - String:          ' at callsite '
+  - String:          test2
+  - String:          ':'
+  - Line:            '23'
+...
+--- !Passed
+Pass:            inline
+Name:            Inlined
+DebugLoc:        { File: test2.cpp, Line: 29, Column: 13 }
+Function:        _Z5test2PfS_S_i
+Args:
+  - Callee:          _ZStlsISt11char_traitsIcEERSt13basic_ostreamIcT_ES5_PKc
+    DebugLoc:        { File: '/usr/bin/../lib/gcc/x86_64-linux-gnu/10/../../../../include/c++/10/ostream', 
+                       Line: 607, Column: 0 }
+  - String:          ' inlined into '
+  - Caller:          _Z5test2PfS_S_i
+    DebugLoc:        { File: test2.cpp, Line: 6, Column: 0 }
+  - String:          ' with '
+  - String:          '(cost='
+  - Cost:            '40'
+  - String:          ', threshold='
+  - Threshold:       '487'
+  - String:          ')'
+  - String:          ' at callsite '
+  - String:          test2
+  - String:          ':'
+  - Line:            '24'
+...
+--- !Passed
+Pass:            inline
+Name:            Inlined
+DebugLoc:        { File: test2.cpp, Line: 30, Column: 13 }
+Function:        _Z5test2PfS_S_i
+Args:
+  - Callee:          _ZNSolsEd
+    DebugLoc:        { File: '/usr/bin/../lib/gcc/x86_64-linux-gnu/10/../../../../include/c++/10/ostream', 
+                       Line: 221, Column: 0 }
+  - String:          ' inlined into '
+  - Caller:          _Z5test2PfS_S_i
+    DebugLoc:        { File: test2.cpp, Line: 6, Column: 0 }
+  - String:          ' with '
+  - String:          '(cost='
+  - Cost:            '0'
+  - String:          ', threshold='
+  - Threshold:       '375'
+  - String:          ')'
+  - String:          ' at callsite '
+  - String:          test2
+  - String:          ':'
+  - Line:            '25'
+...
+--- !Passed
+Pass:            inline
+Name:            Inlined
+DebugLoc:        { File: test2.cpp, Line: 30, Column: 25 }
+Function:        _Z5test2PfS_S_i
+Args:
+  - Callee:          _ZStlsISt11char_traitsIcEERSt13basic_ostreamIcT_ES5_PKc
+    DebugLoc:        { File: '/usr/bin/../lib/gcc/x86_64-linux-gnu/10/../../../../include/c++/10/ostream', 
+                       Line: 607, Column: 0 }
+  - String:          ' inlined into '
+  - Caller:          _Z5test2PfS_S_i
+    DebugLoc:        { File: test2.cpp, Line: 6, Column: 0 }
+  - String:          ' with '
+  - String:          '(cost='
+  - Cost:            '40'
+  - String:          ', threshold='
+  - Threshold:       '487'
+  - String:          ')'
+  - String:          ' at callsite '
+  - String:          test2
+  - String:          ':'
+  - Line:            '25'
+...
+--- !Passed
+Pass:            inline
+Name:            Inlined
+DebugLoc:        { File: test2.cpp, Line: 30, Column: 44 }
+Function:        _Z5test2PfS_S_i
+Args:
+  - Callee:          _ZStlsISt11char_traitsIcEERSt13basic_ostreamIcT_ES5_PKc
+    DebugLoc:        { File: '/usr/bin/../lib/gcc/x86_64-linux-gnu/10/../../../../include/c++/10/ostream', 
+                       Line: 607, Column: 0 }
+  - String:          ' inlined into '
+  - Caller:          _Z5test2PfS_S_i
+    DebugLoc:        { File: test2.cpp, Line: 6, Column: 0 }
+  - String:          ' with '
+  - String:          '(cost='
+  - Cost:            '40'
+  - String:          ', threshold='
+  - Threshold:       '487'
+  - String:          ')'
+  - String:          ' at callsite '
+  - String:          test2
+  - String:          ':'
+  - Line:            '25'
+...
+--- !Passed
+Pass:            inline
+Name:            Inlined
+DebugLoc:        { File: test2.cpp, Line: 30, Column: 60 }
+Function:        _Z5test2PfS_S_i
+Args:
+  - Callee:          _ZStlsISt11char_traitsIcEERSt13basic_ostreamIcT_ES5_PKc
+    DebugLoc:        { File: '/usr/bin/../lib/gcc/x86_64-linux-gnu/10/../../../../include/c++/10/ostream', 
+                       Line: 607, Column: 0 }
+  - String:          ' inlined into '
+  - Caller:          _Z5test2PfS_S_i
+    DebugLoc:        { File: test2.cpp, Line: 6, Column: 0 }
+  - String:          ' with '
+  - String:          '(cost='
+  - Cost:            '40'
+  - String:          ', threshold='
+  - Threshold:       '487'
+  - String:          ')'
+  - String:          ' at callsite '
+  - String:          test2
+  - String:          ':'
+  - Line:            '25'
+...
+--- !Passed
+Pass:            licm
+Name:            InstSunk
+DebugLoc:        { File: test2.cpp, Line: 18, Column: 11 }
+Function:        _Z5test2PfS_S_i
+Args:
+  - String:          'sinking '
+  - Inst:            getelementptr
+    DebugLoc:        { File: test2.cpp, Line: 18, Column: 11 }
+...
+--- !Passed
+Pass:            licm
+Name:            InstSunk
+DebugLoc:        { File: test2.cpp, Line: 17, Column: 12 }
+Function:        _Z5test2PfS_S_i
+Args:
+  - String:          'sinking '
+  - Inst:            bitcast
+    DebugLoc:        { File: test2.cpp, Line: 17, Column: 12 }
+...
+--- !Passed
+Pass:            licm
+Name:            InstSunk
+DebugLoc:        { File: test2.cpp, Line: 17, Column: 14 }
+Function:        _Z5test2PfS_S_i
+Args:
+  - String:          'sinking '
+  - Inst:            bitcast
+    DebugLoc:        { File: test2.cpp, Line: 17, Column: 14 }
+...
+--- !Passed
+Pass:            licm
+Name:            InstSunk
+DebugLoc:        { File: test2.cpp, Line: 17, Column: 14 }
+Function:        _Z5test2PfS_S_i
+Args:
+  - String:          'sinking '
+  - Inst:            zext
+    DebugLoc:        { File: test2.cpp, Line: 17, Column: 14 }
+...
+--- !Missed
+Pass:            gvn
+Name:            LoadClobbered
+DebugLoc:        { File: './fasttime.h', Line: 78, Column: 1 }
+Function:        _Z5test2PfS_S_i
+Args:
+  - String:          'load of type '
+  - Type:            i64
+  - String:          ' not eliminated'
+  - String:          ' because it is clobbered by '
+  - ClobberedBy:     call
+    DebugLoc:        { File: './fasttime.h', Line: 74, Column: 11 }
+...
+--- !Missed
+Pass:            gvn
+Name:            LoadClobbered
+DebugLoc:        { File: './fasttime.h', Line: 78, Column: 1 }
+Function:        _Z5test2PfS_S_i
+Args:
+  - String:          'load of type '
+  - Type:            i64
+  - String:          ' not eliminated'
+  - String:          ' because it is clobbered by '
+  - ClobberedBy:     call
+    DebugLoc:        { File: './fasttime.h', Line: 74, Column: 11 }
+...
+--- !Missed
+Pass:            gvn
+Name:            LoadClobbered
+DebugLoc:        { File: test2.cpp, Line: 18, Column: 11 }
+Function:        _Z5test2PfS_S_i
+Args:
+  - String:          'load of type '
+  - Type:            float
+  - String:          ' not eliminated'
+  - String:          ' because it is clobbered by '
+  - ClobberedBy:     call
+    DebugLoc:        { File: './fasttime.h', Line: 74, Column: 11 }
+...
+--- !Missed
+Pass:            gvn
+Name:            LoadClobbered
+DebugLoc:        { File: './fasttime.h', Line: 78, Column: 1 }
+Function:        _Z5test2PfS_S_i
+Args:
+  - String:          'load of type '
+  - Type:            i64
+  - String:          ' not eliminated'
+  - String:          ' because it is clobbered by '
+  - ClobberedBy:     call
+    DebugLoc:        { File: './fasttime.h', Line: 74, Column: 11 }
+...
+--- !Missed
+Pass:            gvn
+Name:            LoadClobbered
+DebugLoc:        { File: './fasttime.h', Line: 78, Column: 1 }
+Function:        _Z5test2PfS_S_i
+Args:
+  - String:          'load of type '
+  - Type:            i64
+  - String:          ' not eliminated'
+  - String:          ' because it is clobbered by '
+  - ClobberedBy:     call
+    DebugLoc:        { File: './fasttime.h', Line: 74, Column: 11 }
+...
+--- !Passed
+Pass:            licm
+Name:            InstSunk
+DebugLoc:        { File: test2.cpp, Line: 18, Column: 11 }
+Function:        _Z5test2PfS_S_i
+Args:
+  - String:          'sinking '
+  - Inst:            getelementptr
+    DebugLoc:        { File: test2.cpp, Line: 18, Column: 11 }
+...
+--- !Passed
+Pass:            licm
+Name:            InstSunk
+DebugLoc:        { File: test2.cpp, Line: 17, Column: 12 }
+Function:        _Z5test2PfS_S_i
+Args:
+  - String:          'sinking '
+  - Inst:            bitcast
+    DebugLoc:        { File: test2.cpp, Line: 17, Column: 12 }
+...
+--- !Passed
+Pass:            licm
+Name:            InstSunk
+DebugLoc:        { File: test2.cpp, Line: 17, Column: 14 }
+Function:        _Z5test2PfS_S_i
+Args:
+  - String:          'sinking '
+  - Inst:            bitcast
+    DebugLoc:        { File: test2.cpp, Line: 17, Column: 14 }
+...
+--- !Missed
+Pass:            inline
+Name:            NoDefinition
+DebugLoc:        { File: '/usr/bin/../lib/gcc/x86_64-linux-gnu/10/../../../../include/c++/10/iostream', 
+                   Line: 74, Column: 25 }
+Function:        __cxx_global_var_init
+Args:
+  - Callee:          _ZNSt8ios_base4InitC1Ev
+  - String:          ' will not be inlined into '
+  - Caller:          __cxx_global_var_init
+    DebugLoc:        { File: '/usr/bin/../lib/gcc/x86_64-linux-gnu/10/../../../../include/c++/10/iostream', 
+                       Line: 74, Column: 0 }
+  - String:          ' because its definition is unavailable'
+...
+--- !Missed
+Pass:            inline
+Name:            NoDefinition
+DebugLoc:        { File: '/usr/bin/../lib/gcc/x86_64-linux-gnu/10/../../../../include/c++/10/iostream', 
+                   Line: 74, Column: 25 }
+Function:        __cxx_global_var_init
+Args:
+  - Callee:          __cxa_atexit
+  - String:          ' will not be inlined into '
+  - Caller:          __cxx_global_var_init
+    DebugLoc:        { File: '/usr/bin/../lib/gcc/x86_64-linux-gnu/10/../../../../include/c++/10/iostream', 
+                       Line: 74, Column: 0 }
+  - String:          ' because its definition is unavailable'
+...
+--- !Passed
+Pass:            inline
+Name:            Inlined
+DebugLoc:        { File: test2.cpp, Line: 0, Column: 0 }
+Function:        _GLOBAL__sub_I_test2.cpp
+Args:
+  - Callee:          __cxx_global_var_init
+    DebugLoc:        { File: '/usr/bin/../lib/gcc/x86_64-linux-gnu/10/../../../../include/c++/10/iostream', 
+                       Line: 74, Column: 0 }
+  - String:          ' inlined into '
+  - Caller:          _GLOBAL__sub_I_test2.cpp
+    DebugLoc:        { File: test2.cpp, Line: 0, Column: 0 }
+  - String:          ' with '
+  - String:          '(cost='
+  - Cost:            '-14950'
+  - String:          ', threshold='
+  - Threshold:       '375'
+  - String:          ')'
+  - String:          ' at callsite '
+  - String:          _GLOBAL__sub_I_test2.cpp
+  - String:          ':'
+  - Line:            '0'
+...
+--- !Analysis
+Pass:            loop-vectorize
+Name:            UnsafeMemDep
+DebugLoc:        { File: test2.cpp, Line: 14, Column: 5 }
+Function:        _Z5test2PfS_S_i
+Args:
+  - String:          'loop not vectorized: '
+  - String:          'unsafe dependent memory operations in loop. Use #pragma loop distribute(enable) to allow loop distribution to attempt to isolate the offending operations into a separate loop'
+...
+--- !Missed
+Pass:            loop-vectorize
+Name:            MissedDetails
+DebugLoc:        { File: test2.cpp, Line: 14, Column: 5 }
+Function:        _Z5test2PfS_S_i
+Args:
+  - String:          loop not vectorized
+...
+--- !Passed
+Pass:            loop-unroll
+Name:            PartialUnrolled
+DebugLoc:        { File: test2.cpp, Line: 14, Column: 5 }
+Function:        _Z5test2PfS_S_i
+Args:
+  - String:          'unrolled loop by a factor of '
+  - UnrollCount:     '2'
+  - String:          ' with a breakout at trip '
+  - BreakoutTrip:    '0'
+...
+--- !Passed
+Pass:            licm
+Name:            InstSunk
+DebugLoc:        { File: test2.cpp, Line: 18, Column: 11 }
+Function:        _Z5test2PfS_S_i
+Args:
+  - String:          'sinking '
+  - Inst:            getelementptr
+    DebugLoc:        { File: test2.cpp, Line: 18, Column: 11 }
+...
+--- !Passed
+Pass:            licm
+Name:            InstSunk
+DebugLoc:        { File: test2.cpp, Line: 17, Column: 12 }
+Function:        _Z5test2PfS_S_i
+Args:
+  - String:          'sinking '
+  - Inst:            bitcast
+    DebugLoc:        { File: test2.cpp, Line: 17, Column: 12 }
+...
+--- !Passed
+Pass:            licm
+Name:            InstSunk
+DebugLoc:        { File: test2.cpp, Line: 17, Column: 14 }
+Function:        _Z5test2PfS_S_i
+Args:
+  - String:          'sinking '
+  - Inst:            bitcast
+    DebugLoc:        { File: test2.cpp, Line: 17, Column: 14 }
+...
+--- !Passed
+Pass:            licm
+Name:            InstSunk
+DebugLoc:        { File: test2.cpp, Line: 18, Column: 11 }
+Function:        _Z5test2PfS_S_i
+Args:
+  - String:          'sinking '
+  - Inst:            getelementptr
+    DebugLoc:        { File: test2.cpp, Line: 18, Column: 11 }
+...
+--- !Passed
+Pass:            licm
+Name:            InstSunk
+DebugLoc:        { File: test2.cpp, Line: 17, Column: 12 }
+Function:        _Z5test2PfS_S_i
+Args:
+  - String:          'sinking '
+  - Inst:            bitcast
+    DebugLoc:        { File: test2.cpp, Line: 17, Column: 12 }
+...
+--- !Passed
+Pass:            licm
+Name:            InstSunk
+DebugLoc:        { File: test2.cpp, Line: 17, Column: 14 }
+Function:        _Z5test2PfS_S_i
+Args:
+  - String:          'sinking '
+  - Inst:            bitcast
+    DebugLoc:        { File: test2.cpp, Line: 17, Column: 14 }
+...
+--- !Analysis
+Pass:            prologepilog
+Name:            StackSize
+DebugLoc:        { File: test2.cpp, Line: 6, Column: 0 }
+Function:        _Z5test2PfS_S_i
+Args:
+  - NumStackBytes:   '72'
+  - String:          ' stack bytes in function'
+...
+--- !Analysis
+Pass:            asm-printer
+Name:            InstructionCount
+DebugLoc:        { File: test2.cpp, Line: 6, Column: 0 }
+Function:        _Z5test2PfS_S_i
+Args:
+  - NumInstructions: '96'
+  - String:          ' instructions in function'
+...
+--- !Analysis
+Pass:            prologepilog
+Name:            StackSize
+DebugLoc:        { File: test2.cpp, Line: 0, Column: 0 }
+Function:        _GLOBAL__sub_I_test2.cpp
+Args:
+  - NumStackBytes:   '8'
+  - String:          ' stack bytes in function'
+...
+--- !Analysis
+Pass:            asm-printer
+Name:            InstructionCount
+DebugLoc:        { File: test2.cpp, Line: 0, Column: 0 }
+Function:        _GLOBAL__sub_I_test2.cpp
+Args:
+  - NumInstructions: '8'
+  - String:          ' instructions in function'
+...

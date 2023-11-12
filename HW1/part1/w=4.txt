@@ -1,0 +1,20 @@
+[1;31mCLAMPED EXPONENT[0m (required) 
+Results matched with answer!
+****************** Printing Vector Unit Statistics *******************
+Vector Width:              4
+Total Vector Instructions: 94577
+Vector Utilization:        87.5%
+Utilized Vector Lanes:     331005
+Total Vector Lanes:        378308
+************************ Result Verification *************************
+ClampedExp Passed!!!
+
+[1;31mARRAY SUM[0m (bonus) 
+****************** Printing Vector Unit Statistics *******************
+Vector Width:              4
+Total Vector Instructions: 5003
+Vector Utilization:        100.0%
+Utilized Vector Lanes:     20009
+Total Vector Lanes:        20012
+************************ Result Verification *************************
+ArraySum Passed!!!
