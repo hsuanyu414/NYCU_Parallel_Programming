@@ -83,16 +83,22 @@ void pageRank(Graph g, double *solution, double damping, double convergence)
       //score_new[vi] = (damping * score_new[vi]) + (1.0-damping) / numNodes;
       score_new[vi] = (damping * score_new[vi]) + (1.0-damping) / numNodes;
   
-      // score_new[vi] += sum over all nodes v in graph with no outgoing edges
-      // { damping * score_old[v] / numNodes }
-      for(int v = 0 ; v < numNodes ; v+=1){
-        if(outgoing_size(g, v) == 0){
-          score_new[vi] += damping * score_old[v] / numNodes;
-        }
-      }
+      
     
     }
+    // score_new[vi] += sum over all nodes v in graph with no outgoing edges
+    // { damping * score_old[v] / numNodes }
+    double no_outgoing_sum = 0.0;
+    for(int v = 0 ; v < numNodes ; v ++){
+      if(outgoing_size(g, v) == 0){
+        no_outgoing_sum += damping * score_old[v] / numNodes;
+      }
+    }
+    for(int vi = 0 ; vi < numNodes ; vi+=1){
+      score_new[vi] += no_outgoing_sum;
+    }
     
+
     // compute how much per-node scores have changed
     // quit once algorithm has converged
 
@@ -103,7 +109,6 @@ void pageRank(Graph g, double *solution, double damping, double convergence)
     }
     // converged = (global_diff < convergence)
     converged = (global_diff < convergence);
-    printf("global_diff: %f\n", global_diff);
 
     // swap score_new and score_old
     std::swap(score_new, score_old);
