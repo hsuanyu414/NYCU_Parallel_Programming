@@ -26,7 +26,7 @@ void conj_grad(int colidx[],
     //---------------------------------------------------------------------
     #pragma omp parallel
     {
-        // #pragma omp for
+        #pragma omp for
         for (j = 0; j < naa + 1; j+=1)
         {
             q[j] = 0.0;

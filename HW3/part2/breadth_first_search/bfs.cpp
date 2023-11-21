@@ -182,11 +182,9 @@ void bottom_up_step(
 
     // init the vector for each thread
     vector<vector<int>> thread_next(omp_get_max_threads());
-    
-    // printf("%d\n", g->num_nodes);
-    // bool is_frontier[g->num_nodes];
+
+    // use a bool array to check if the node is in the frontier
     bool *is_frontier = (bool *)malloc(sizeof(bool) * g->num_nodes);
-    // printf("check\n");
     memset(is_frontier, false, sizeof(bool) * g->num_nodes);
     // go through all nodes in the frontier
     for (int i = 0; i < frontier->count; i++)
@@ -363,9 +361,11 @@ void bfs_hybrid(Graph graph, solution *sol)
             }
         }
         
+        // tuing result from the paper
         int alpha = 14;
         int beta = 24;
 
+        // state machine to decide which step to take
         if ( is_top_down ){
             if(mf > mu/alpha){
                 is_top_down = false;
@@ -374,8 +374,7 @@ void bfs_hybrid(Graph graph, solution *sol)
                 is_top_down = true;
             }
         }
-        else
-        {
+        else{
             if(nf < n/beta){
                 is_top_down = true;
             }
@@ -384,16 +383,13 @@ void bfs_hybrid(Graph graph, solution *sol)
             }
         }
 
+        // take the step according to the state machine
         if ( is_top_down ){
             top_down_step(graph, frontier, new_frontier, sol->distances, depth);
         }
-        else
-        {
+        else{
             bottom_up_step(graph, frontier, new_frontier, sol->distances, depth);
         }
-        
-
-        
         
         depth += 1;
 

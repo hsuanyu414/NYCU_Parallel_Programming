@@ -91,7 +91,7 @@ void pageRank(Graph g, double *solution, double damping, double convergence)
       }
     
       //score_new[vi] = (damping * score_new[vi]) + (1.0-damping) / numNodes;
-      score_new[vi] = (damping * score_new[vi]) + one_minus_damping * equal_prob;
+      score_new[vi] = (damping * score_new[vi]) + one_minus_damping / numNodes;
   
       
     }
