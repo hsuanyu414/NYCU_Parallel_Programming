@@ -1,0 +1,2 @@
+make
+./cg_grader
