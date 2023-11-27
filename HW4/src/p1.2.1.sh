@@ -10,7 +10,15 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
+echo "run my pi_block_linear"
 mpirun -np 4 --hostfile hosts pi_block_linear 1000000000
+if [ $? -ne 0 ]; then
+    echo "run fail"
+    exit 1
+fi
+
+echo "run TA's pi_block_linear"
+mpirun -np 4 --hostfile hosts /home/HW4/ref/pi_block_linear 1000000000
 if [ $? -ne 0 ]; then
     echo "run fail"
     exit 1

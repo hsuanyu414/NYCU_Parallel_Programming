@@ -5,6 +5,28 @@
 #include <sys/types.h>
 #include <unistd.h>
 
+#pragma GCC optimize ("O3")
+#pragma GCC target("tune=native")
+
+int64_t MonteCarlo(int tosses, int rank)
+{
+    double x, y, distance_squared;
+    int64_t local_number_in_circle = 0;
+    uint32_t seed1 = rank;
+    uint32_t seed2 = time(0) + rank;
+    for (int64_t i = 0; i < tosses; i+=1)
+    {
+        x = ((double)rand_r(&seed1)/RAND_MAX)*2-1;
+        y = ((double)rand_r(&seed2)/RAND_MAX)*2-1;
+        distance_squared = x * x + y * y;
+        if (distance_squared <= 1)
+        {
+            local_number_in_circle+=1;
+        }
+    }
+    return local_number_in_circle;
+}
+
 int main(int argc, char **argv)
 {
     // --- DON'T TOUCH ---
@@ -16,24 +38,42 @@ int main(int argc, char **argv)
     // ---
 
     // TODO: MPI init
+    MPI_Comm_rank(MPI_COMM_WORLD, &world_rank);
+    MPI_Comm_size(MPI_COMM_WORLD, &world_size);
+
+    int64_t tosses_per_process = tosses / world_size;
+    int64_t local_number_in_circle;
 
     if (world_rank > 0)
     {
         // TODO: MPI workers
+        local_number_in_circle = MonteCarlo(tosses_per_process, world_rank);
+        MPI_Send(&local_number_in_circle, 1, MPI_INT64_T, 0, 0, MPI_COMM_WORLD);
     }
     else if (world_rank == 0)
     {
+        int64_t tosses_remaining = tosses - tosses_per_process * (world_size - 1);
+        local_number_in_circle = MonteCarlo(tosses_remaining, world_rank);
+        int64_t recv_number_in_circle;
         // TODO: non-blocking MPI communication.
         // Use MPI_Irecv, MPI_Wait or MPI_Waitall.
-        MPI_Request requests[];
+        MPI_Request requests[world_size];
+        int64_t local_number_in_circle_array[world_size] ;
+        for(int i = 1 ; i < world_size ; i+=1){
+            MPI_Irecv(&local_number_in_circle_array[i], 1, MPI_INT64_T, i, 0, MPI_COMM_WORLD, &requests[i]);
+        }                
+                
+        MPI_Waitall(world_size-1, &requests[1], MPI_STATUSES_IGNORE);
 
-        MPI_Waitall();
+        for(int i = 1 ; i < world_size ; i+=1){
+            local_number_in_circle += local_number_in_circle_array[i];
+        }
     }
 
     if (world_rank == 0)
     {
         // TODO: PI result
-
+        pi_result = ((double)4 * local_number_in_circle / tosses);
         // --- DON'T TOUCH ---
         double end_time = MPI_Wtime();
         printf("%lf\n", pi_result);
