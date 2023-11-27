@@ -6,6 +6,7 @@
 #include <unistd.h>
 
 #pragma GCC optimize ("O3")
+#pragma GCC target("tune=native")
 
 int64_t MonteCarlo(int tosses, int rank)
 {
