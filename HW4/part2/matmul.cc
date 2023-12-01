@@ -22,14 +22,16 @@ void construct_matrices(int *n_ptr, int *m_ptr, int *l_ptr,
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     MPI_Comm_size(MPI_COMM_WORLD, &size);
     if(rank == MASTER){
-        useless = scanf("%d %d %d", n_ptr, m_ptr, l_ptr);
+        setvbuf(stdin, (char*)calloc(1 << 30, sizeof(char)), _IOFBF, 1 << 30);
+        scanf("%d %d %d", n_ptr, m_ptr, l_ptr);
         *a_mat_ptr = (int *)malloc((*n_ptr) * (*m_ptr) * sizeof(int));
         *b_mat_ptr = (int *)malloc((*m_ptr) * (*l_ptr) * sizeof(int));
-        for (int i = 0; i < (*n_ptr) * (*m_ptr); i++)
-            useless = scanf("%d", *a_mat_ptr+i);
-        for (int i = 0; i < (*m_ptr); i++)
-            for (int j = 0; j < (*l_ptr); j++)
-                useless = scanf("%d", *b_mat_ptr + j * (*m_ptr) + i);
+        for (int i = 0; i < (*n_ptr) * (*m_ptr); i+=1)
+            scanf("%d", *a_mat_ptr+i);
+        for (int i = 0; i < (*m_ptr); i+=1)
+            for (int j = 0; j < (*l_ptr); j+=1)
+                scanf("%d", *b_mat_ptr + j * (*m_ptr) + i);
+        fflush(stdin);
     }// singel node io
     return;
 }
@@ -53,100 +55,123 @@ void matrix_multiply(const int n, const int m, const int l,
     int rows, avg_row, extra_row, offset;
     if ( rank == MASTER ){
         int *result_c_mat_master;
-        result_c_mat_master = (int *)malloc(n * l * sizeof(int));
         avg_row = n / size;
         extra_row = n % size;
         offset = 0;
         int offset_master = 0;
         mtype = FROM_MASTER;
-    
-        for( int dest = 1; dest < size; dest += 1){
-            rows = (dest < extra_row) ? avg_row + 1 : avg_row;
-            MPI_Send(&n, 1, MPI_INT, dest, mtype, MPI_COMM_WORLD);
-            MPI_Send(&m, 1, MPI_INT, dest, mtype, MPI_COMM_WORLD);
-            MPI_Send(&l, 1, MPI_INT, dest, mtype, MPI_COMM_WORLD);
-            MPI_Send(&offset, 1, MPI_INT, dest, mtype, MPI_COMM_WORLD);
-            MPI_Send(&rows, 1, MPI_INT, dest, mtype, MPI_COMM_WORLD);
-            MPI_Send(&a_mat[offset * m], rows * m, MPI_INT, dest, mtype, MPI_COMM_WORLD);
-            MPI_Send(&b_mat[0], m * l, MPI_INT, dest, mtype, MPI_COMM_WORLD);
-            offset += rows;
-        }
+        int offset_and_rows[2][size];
 
-        offset_master = offset;
+        MPI_Request master_request_1[size][7];
+        int my_offect;
+        for (int i = 1; i < size; i+=1){
+            rows = avg_row;
+            offset = (i-1) * avg_row;
+            offset_and_rows[0][i] = offset;
+            offset_and_rows[1][i] = rows;
+            
+            MPI_Isend(&n, 1, MPI_INT, i, mtype+1, MPI_COMM_WORLD, &master_request_1[i][0]);
+            MPI_Isend(&m, 1, MPI_INT, i, mtype+2, MPI_COMM_WORLD, &master_request_1[i][1]);
+            MPI_Isend(&l, 1, MPI_INT, i, mtype+3, MPI_COMM_WORLD, &master_request_1[i][2]);
+            MPI_Isend(&offset, 1, MPI_INT, i, mtype+4, MPI_COMM_WORLD, &master_request_1[i][3]);
+            MPI_Isend(&rows, 1, MPI_INT, i, mtype+5, MPI_COMM_WORLD, &master_request_1[i][4]);
+            MPI_Isend(&b_mat[0], m * l, MPI_INT, i, mtype+7, MPI_COMM_WORLD, &master_request_1[i][5]);
+            MPI_Isend(&a_mat[offset_and_rows[0][i] * m], offset_and_rows[1][i] * m, MPI_INT, i, mtype+6, MPI_COMM_WORLD, &master_request_1[i][6]);
+        
+        }
+        // double start_time = MPI_Wtime();
+        MPI_Waitall((size-1)*7, &master_request_1[1][0], MPI_STATUSES_IGNORE);
+        // double end_time = MPI_Wtime();
+        // printf("MPI waiting time: %lf Seconds\n", end_time - start_time);
+
+        result_c_mat_master = (int *)malloc(n * l * sizeof(int));
+        
+        offset_master = (size-1) * avg_row;
+        rows = avg_row+extra_row;
+
         // master do its part
-        rows = (rank < extra_row) ? avg_row + 1 : avg_row;
         int *a_with_offset = (int*)a_mat + offset_master * m;
 
-        for (int i = 0; i < rows; i++){
-            for (int j = 0; j < l; j++){
-                result_c_mat_master[(offset_master + i) * l + j] = 0;
-                for (int k = 0; k < m; k++){
-                    result_c_mat_master[(offset_master + i) * l + j] += a_with_offset[i * m + k] * b_mat[j * m + k];
+        for (int i = 0; i < rows; i+=1){
+            for (int j = 0; j < l; j+=1){
+                int tmp = 0;
+                for (int k = 0; k < m; k+=1){
+                    tmp += a_with_offset[i * m + k] * b_mat[j * m + k];
                 }
+                result_c_mat_master[(offset_master + i) * l + j] = tmp;
             }
         }
-
+        
         // receive result from workers
         
         mtype = FROM_WORKER;
-        for (int source = 1; source < size; source+=1){
-            MPI_Recv(&offset, 1, MPI_INT, source, mtype, MPI_COMM_WORLD, &status);
-            MPI_Recv(&rows, 1, MPI_INT, source, mtype, MPI_COMM_WORLD, &status);
-            MPI_Recv(&result_c_mat_master[offset * l], rows * l, MPI_INT, source, mtype, MPI_COMM_WORLD, &status);
-        }
-        
+        MPI_Request requests3[size];
 
+        for (int source = 1; source < size; source+=1){
+            MPI_Irecv(&result_c_mat_master[offset_and_rows[0][source] * l], offset_and_rows[1][source] * l, MPI_INT, source, mtype+3, MPI_COMM_WORLD, &requests3[source]);
+        }
+        MPI_Waitall(size-1, &requests3[1], MPI_STATUSES_IGNORE);
+        
         #if DEBUG
         // print the part of master
         printf("master:\n");
-        for (int i = 0; i < rows; i++){
-            for (int j = 0; j < l; j++){
+        for (int i = 0; i < rows; i+=1){
+            for (int j = 0; j < l; j+=1){
                 printf("%d ", result_c_mat_master[(offset_master + i) * l + j]);
             }
             printf("\n");
         }
         printf("===================\n");
         #endif
-        for (int i = 0; i < n; i++){
-            for (int j = 0; j < l; j++){
+
+        # if not DEBUG
+        for (int i = 0; i < n; i+=1){
+            for (int j = 0; j < l; j+=1){
                 printf("%d ", result_c_mat_master[i * l + j]);
             }
             printf("\n");
         }
+        # endif
         free(result_c_mat_master);
     }
     else{
         mtype = FROM_MASTER;
-        MPI_Recv(&n_, 1, MPI_INT, MASTER, mtype, MPI_COMM_WORLD, &status);
-        MPI_Recv(&m_, 1, MPI_INT, MASTER, mtype, MPI_COMM_WORLD, &status);
-        MPI_Recv(&l_, 1, MPI_INT, MASTER, mtype, MPI_COMM_WORLD, &status);
+        MPI_Request requests[5];
+        MPI_Request requests2[2];
 
-        MPI_Recv(&offset, 1, MPI_INT, MASTER, mtype, MPI_COMM_WORLD, &status);
-        MPI_Recv(&rows, 1, MPI_INT, MASTER, mtype, MPI_COMM_WORLD, &status);
-
-        int *a_recv = (int *)malloc(n_ * m_ * sizeof(int));
-        int *b_recv = (int *)malloc(m_ * l_ * sizeof(int));
-        int *c_send = (int *)malloc(n_ * l_ * sizeof(int));
+        MPI_Irecv(&n_, 1, MPI_INT, MASTER, mtype+1, MPI_COMM_WORLD, &requests[0]);
+        MPI_Irecv(&m_, 1, MPI_INT, MASTER, mtype+2, MPI_COMM_WORLD, &requests[1]);
+        MPI_Irecv(&l_, 1, MPI_INT, MASTER, mtype+3, MPI_COMM_WORLD, &requests[2]);
+        MPI_Irecv(&offset, 1, MPI_INT, MASTER, mtype+4, MPI_COMM_WORLD, &requests[3]);
+        MPI_Irecv(&rows, 1, MPI_INT, MASTER, mtype+5, MPI_COMM_WORLD, &requests[4]);
+        MPI_Waitall(5, &requests[0], MPI_STATUSES_IGNORE);
         
-        MPI_Recv(&a_recv[0], rows * m_, MPI_INT, MASTER, mtype, MPI_COMM_WORLD, &status);
-        MPI_Recv(&b_recv[0], m_ * l_, MPI_INT, MASTER, mtype, MPI_COMM_WORLD, &status);
+        int *c_send = (int *)malloc(n_ * l_ * sizeof(int));
 
+        int *b_recv = (int *)malloc(m_ * l_ * sizeof(int));
+        MPI_Irecv(&b_recv[0], m_ * l_, MPI_INT, MASTER, mtype+7, MPI_COMM_WORLD, &requests2[1]);
+        
+        int *a_recv = (int *)malloc(rows * m_ * sizeof(int));
+        MPI_Irecv(&a_recv[0], rows * m_, MPI_INT, MASTER, mtype+6, MPI_COMM_WORLD, &requests2[0]);
+        
+        MPI_Waitall(2, &requests2[0], MPI_STATUSES_IGNORE);
+        
         // worker do its part
-        for (int i = 0; i < rows; i++){
-            for (int j = 0; j < l_; j++){
-                c_send[i * l_ + j] = 0;
-                for (int k = 0; k < m_; k++){
-                    c_send[i * l_ + j] += a_recv[i * m_ + k] * b_recv[j * m_ + k];
+        for (int i = 0; i < rows; i+=1){
+            for (int j = 0; j < l_; j+=1){
+                int tmp = 0;
+                for (int k = 0; k < m_; k+=1){
+                    tmp += a_recv[i * m_ + k] * b_recv[j * m_ + k];
                 }
-                
+                c_send[i * l_ + j] = tmp;   
             }
         }
 
         #if DEBUG
         // print the part of worker
         printf("worker %d:\n", rank);
-        for (int i = 0; i < rows; i++){
-            for (int j = 0; j < l_; j++){
+        for (int i = 0; i < rows; i+=1){
+            for (int j = 0; j < l_; j+=1){
                 printf("%d ", c_send[i * l_ + j]);
             }
             printf("\n");
@@ -156,11 +181,13 @@ void matrix_multiply(const int n, const int m, const int l,
 
         // send result back to master
         mtype = FROM_WORKER;
-        MPI_Send(&offset, 1, MPI_INT, MASTER, mtype, MPI_COMM_WORLD);
-        MPI_Send(&rows, 1, MPI_INT, MASTER, mtype, MPI_COMM_WORLD);
-        MPI_Send(&c_send[0], rows * l_, MPI_INT, MASTER, mtype, MPI_COMM_WORLD);
+        
+        MPI_Request requests3;
+        // MPI_Send(&c_send[0], rows * l_, MPI_INT, MASTER, mtype+3, MPI_COMM_WORLD);
+        MPI_Isend(&c_send[0], rows * l_, MPI_INT, MASTER, mtype+3, MPI_COMM_WORLD, &requests3);
         free(a_recv);
         free(b_recv);
+        MPI_Wait(&requests3, MPI_STATUSES_IGNORE);
         free(c_send);
     }
     
@@ -176,4 +203,5 @@ void destruct_matrices(int *a_mat, int *b_mat){
         free(a_mat);
         free(b_mat);
     }
+    return;
 }
