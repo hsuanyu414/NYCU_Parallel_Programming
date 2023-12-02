@@ -60,7 +60,7 @@ int main(int argc, char **argv)
         for(int i = 1 ; i < world_size ; i+=1){ //except master
             local_number_in_circle += local_number_in_circle_array[i];
         }
-        pi_result = ((double)local_number_in_circle / (double)tosses) * 4.0;
+        pi_result = ((double)4 * local_number_in_circle / tosses);
 
         // --- DON'T TOUCH ---
         double end_time = MPI_Wtime();

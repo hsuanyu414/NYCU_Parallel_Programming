@@ -80,7 +80,7 @@ int main(int argc, char **argv)
     if (world_rank == 0)
     {
         // TODO: handle PI result    
-        pi_result = ((double)*recv_number_in_circle / (double)tosses) * 4.0;
+        pi_result = ((double)4 * *recv_number_in_circle / tosses);
         
         // --- DON'T TOUCH ---
         double end_time = MPI_Wtime();

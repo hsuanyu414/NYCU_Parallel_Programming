@@ -70,7 +70,7 @@ int main(int argc, char **argv)
     if (world_rank == 0)
     {
         // TODO: PI result
-        pi_result = 4 * (double)local_number_in_circle / tosses;
+        pi_result = ((double)4 * local_number_in_circle / tosses);
         // --- DON'T TOUCH ---
         double end_time = MPI_Wtime();
         printf("%lf\n", pi_result);
