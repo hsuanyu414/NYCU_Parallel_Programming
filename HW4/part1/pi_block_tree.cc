@@ -56,11 +56,11 @@ int main(int argc, char **argv)
     // do the reduction
     int64_t recv_number_in_circle;
     for(int i = 1 ; i < world_size ; i*=2){ // i = 1, 2, 4, 8, ...
-        if(world_rank % (i*2) == 0){ // if this node is the receiver at this round
+        if(world_rank % (i*2) == 0){ // if this node is the receiver at this round ({0, 2, 4, 6, ...} at round 0)
             MPI_Recv(&recv_number_in_circle, 1, MPI_INT64_T, world_rank + i, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
             local_number_in_circle += recv_number_in_circle;
         }
-        else if(world_rank % i == 0){ // if this node is the sender at this round
+        else if(world_rank % i == 0){ // if this node is the sender at this round ({1, 3, 5, 7, ...} at round 0)
             MPI_Send(&local_number_in_circle, 1, MPI_INT64_T, world_rank - i, 0, MPI_COMM_WORLD);
             break;
         }
