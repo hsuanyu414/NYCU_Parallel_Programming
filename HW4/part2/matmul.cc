@@ -28,6 +28,7 @@ void construct_matrices(int *n_ptr, int *m_ptr, int *l_ptr,
         *b_mat_ptr = (int *)malloc((*m_ptr) * (*l_ptr) * sizeof(int));
         for (int i = 0; i < (*n_ptr) * (*m_ptr); i+=1)
             scanf("%d", *a_mat_ptr+i);
+        // scan b matrix in transpose order
         for (int i = 0; i < (*m_ptr); i+=1)
             for (int j = 0; j < (*l_ptr); j+=1)
                 scanf("%d", *b_mat_ptr + j * (*m_ptr) + i);
@@ -105,12 +106,12 @@ void matrix_multiply(const int n, const int m, const int l,
         // receive result from workers
         
         mtype = FROM_WORKER;
-        MPI_Request requests3[size];
+        MPI_Request master_request_2[size];
 
         for (int source = 1; source < size; source+=1){
-            MPI_Irecv(&result_c_mat_master[offset_and_rows[0][source] * l], offset_and_rows[1][source] * l, MPI_INT, source, mtype+3, MPI_COMM_WORLD, &requests3[source]);
+            MPI_Irecv(&result_c_mat_master[offset_and_rows[0][source] * l], offset_and_rows[1][source] * l, MPI_INT, source, mtype+3, MPI_COMM_WORLD, &master_request_2[source]);
         }
-        MPI_Waitall(size-1, &requests3[1], MPI_STATUSES_IGNORE);
+        MPI_Waitall(size-1, &master_request_2[1], MPI_STATUSES_IGNORE);
         
         #if DEBUG
         // print the part of master
@@ -136,25 +137,25 @@ void matrix_multiply(const int n, const int m, const int l,
     }
     else{
         mtype = FROM_MASTER;
-        MPI_Request requests[5];
-        MPI_Request requests2[2];
+        MPI_Request worker_request_1[5];
+        MPI_Request worker_request_2[2];
 
-        MPI_Irecv(&n_, 1, MPI_INT, MASTER, mtype+1, MPI_COMM_WORLD, &requests[0]);
-        MPI_Irecv(&m_, 1, MPI_INT, MASTER, mtype+2, MPI_COMM_WORLD, &requests[1]);
-        MPI_Irecv(&l_, 1, MPI_INT, MASTER, mtype+3, MPI_COMM_WORLD, &requests[2]);
-        MPI_Irecv(&offset, 1, MPI_INT, MASTER, mtype+4, MPI_COMM_WORLD, &requests[3]);
-        MPI_Irecv(&rows, 1, MPI_INT, MASTER, mtype+5, MPI_COMM_WORLD, &requests[4]);
-        MPI_Waitall(5, &requests[0], MPI_STATUSES_IGNORE);
+        MPI_Irecv(&n_, 1, MPI_INT, MASTER, mtype+1, MPI_COMM_WORLD, &worker_request_1[0]);
+        MPI_Irecv(&m_, 1, MPI_INT, MASTER, mtype+2, MPI_COMM_WORLD, &worker_request_1[1]);
+        MPI_Irecv(&l_, 1, MPI_INT, MASTER, mtype+3, MPI_COMM_WORLD, &worker_request_1[2]);
+        MPI_Irecv(&offset, 1, MPI_INT, MASTER, mtype+4, MPI_COMM_WORLD, &worker_request_1[3]);
+        MPI_Irecv(&rows, 1, MPI_INT, MASTER, mtype+5, MPI_COMM_WORLD, &worker_request_1[4]);
+        MPI_Waitall(5, &worker_request_1[0], MPI_STATUSES_IGNORE);
         
         int *c_send = (int *)malloc(n_ * l_ * sizeof(int));
 
         int *b_recv = (int *)malloc(m_ * l_ * sizeof(int));
-        MPI_Irecv(&b_recv[0], m_ * l_, MPI_INT, MASTER, mtype+7, MPI_COMM_WORLD, &requests2[1]);
+        MPI_Irecv(&b_recv[0], m_ * l_, MPI_INT, MASTER, mtype+7, MPI_COMM_WORLD, &worker_request_2[1]);
         
         int *a_recv = (int *)malloc(rows * m_ * sizeof(int));
-        MPI_Irecv(&a_recv[0], rows * m_, MPI_INT, MASTER, mtype+6, MPI_COMM_WORLD, &requests2[0]);
+        MPI_Irecv(&a_recv[0], rows * m_, MPI_INT, MASTER, mtype+6, MPI_COMM_WORLD, &worker_request_2[0]);
         
-        MPI_Waitall(2, &requests2[0], MPI_STATUSES_IGNORE);
+        MPI_Waitall(2, &worker_request_2[0], MPI_STATUSES_IGNORE);
         
         // worker do its part
         for (int i = 0; i < rows; i+=1){
@@ -182,12 +183,12 @@ void matrix_multiply(const int n, const int m, const int l,
         // send result back to master
         mtype = FROM_WORKER;
         
-        MPI_Request requests3;
+        MPI_Request worker_request_3;
         // MPI_Send(&c_send[0], rows * l_, MPI_INT, MASTER, mtype+3, MPI_COMM_WORLD);
-        MPI_Isend(&c_send[0], rows * l_, MPI_INT, MASTER, mtype+3, MPI_COMM_WORLD, &requests3);
+        MPI_Isend(&c_send[0], rows * l_, MPI_INT, MASTER, mtype+3, MPI_COMM_WORLD, &worker_request_3);
         free(a_recv);
         free(b_recv);
-        MPI_Wait(&requests3, MPI_STATUSES_IGNORE);
+        MPI_Wait(&worker_request_3, MPI_STATUSES_IGNORE);
         free(c_send);
     }
     
